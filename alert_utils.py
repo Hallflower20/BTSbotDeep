@@ -250,7 +250,7 @@ def rerun_braai(triplets):
 
     # Load model
     tf.keras.backend.clear_session()
-    braai = tf.keras.models.load_model("supporting_models/braai_d6_m9.h5")
+    braai = tf.keras.models.load_model("supporting_models/braai_d6_m9_tf_2_18_0.keras")
 
     # Run braai
     new_drb = braai.predict(triplets)

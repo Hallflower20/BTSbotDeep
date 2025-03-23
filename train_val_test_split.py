@@ -102,8 +102,8 @@ def cut_set_and_assign_splits(set_name, cuts, version_name, seed=2):
     set_cand['split'] = None
 
     set_cand['is_SN'] = False
-    set_cand['near_threshold'] = np.bitwise_and(set_cand['peakmag'] > 18.4,
-                                                set_cand['peakmag'] < 18.6)
+    set_cand['near_threshold'] = np.bitwise_and(set_cand['peakmag'] > 18,
+                                                set_cand['peakmag'] < 21)
     set_cand['is_rise'] = False
 
     np.random.seed(seed)
@@ -150,7 +150,7 @@ def cut_set_and_assign_splits(set_name, cuts, version_name, seed=2):
 
         # remove bright sources in dims (peaked < 18.5 only in partnership data)
         # this is a bandaid fix to label noise identified after revealing the test split
-        only_dim = set_cand['peakmag'] > 18.5
+        only_dim = set_cand['peakmag'] > 21
         set_trips, set_cand = apply_cut(set_trips, set_cand, only_dim)
 
     is_train = set_cand[set_cand['split'] == "train"].index
@@ -251,23 +251,25 @@ def create_subset(split_name, version_name, N_max_p: int, N_max_n: int = 0,
 
 
 if __name__ == "__main__":
-    version = "v11"
+    version = "v1"
 
-    # cut_set_and_assign_splits("trues", only_pd_gr_ps, version_name=version)
+    cut_set_and_assign_splits("trues", only_pd_gr_ps, version_name=version)
     # cut_set_and_assign_splits("dims", only_pd_gr_ps, version_name=version)
-    # cut_set_and_assign_splits("vars", only_pd_gr_ps, version_name=version)
-    # cut_set_and_assign_splits("rejects", only_pd_gr_ps, version_name=version)
+    cut_set_and_assign_splits("vars", only_pd_gr_ps, version_name=version)
+    cut_set_and_assign_splits("rejects", only_pd_gr_ps, version_name=version)
+
+    set_names_list = ["trues", "vars", "rejects"]
 
     merge_sets_across_split(
-        set_names=["trues", "dims", "vars", "rejects"], split_name="train",
+        set_names=set_names_list, split_name="train",
         version_name=version, seed=2
     )
     merge_sets_across_split(
-        set_names=["trues", "dims", "vars", "rejects"], split_name="train",
+        set_names=set_names_list, split_name="val",
         version_name=version, seed=2
     )
     merge_sets_across_split(
-        set_names=["trues", "dims", "vars", "rejects"], split_name="train",
+        set_names=set_names_list, split_name="test",
         version_name=version, seed=2
     )
 

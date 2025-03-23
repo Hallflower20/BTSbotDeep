@@ -1,13 +1,13 @@
 {
     "model_name": "mm_cnn",
-    "train_data_version": "v10",
+    "train_data_version": "v1",
     "loss": "binary_crossentropy",
     "learning_rate": 1e-4,
     "beta_1": 0.99,
     "beta_2": 0.99,
     "batch_size": 64,
 
-    "epochs": 1000,
+    "epochs": 4,
     "patience": 75,
     "N_max_p": 100,
     "N_max_n": 100,

@@ -241,7 +241,7 @@ def train(config, run_name: str = None, sweeping: bool = False):
     )
 
     if not sweeping:
-        wandb.init(project="BTSbot")
+        wandb.init(project="BTSbotDeep")
         # Send parameters of this run to WandB
         for param in list(config):
             wandb.config[param] = config[param]
@@ -256,7 +256,7 @@ def train(config, run_name: str = None, sweeping: bool = False):
         os.makedirs(model_dir)
 
     # Save new model whenever there's an improvement in val_loss
-    checkpointing = tf.keras.callbacks.ModelCheckpoint(model_dir, verbose=1,
+    checkpointing = tf.keras.callbacks.ModelCheckpoint(os.path.join(model_dir, "best_model.keras"), verbose=1,
                                                        monitor="val_loss",
                                                        save_best_only=True)
 
@@ -296,26 +296,22 @@ def train(config, run_name: str = None, sweeping: bool = False):
 
             def multiinput_train_generator():
                 while True:
-                    # get the data from the generator
-                    # data is [[img], [metadata and labels]]
-                    # yields batch_size number of entries
-                    data = t_generator.next()
-
+                    data = next(t_generator)
                     imgs = data[0]
                     cols = data[1][:, :-1]
                     targets = data[1][:, -1:]
-
-                    yield [imgs, cols], targets
+                    # Compute sample weights based on class
+                    sample_weights = np.where(targets[:, 0] == 0, class_weight[0], class_weight[1])
+                    yield (imgs, cols), targets, sample_weights
 
             def multiinput_val_generator():
                 while True:
-                    data = v_generator.next()
-
+                    data = next(v_generator)
                     imgs = data[0]
                     cols = data[1][:, :-1]
                     targets = data[1][:, -1:]
-
-                    yield [imgs, cols], targets
+                    sample_weights = np.where(targets[:, 0] == 0, class_weight[0], class_weight[1])
+                    yield (imgs, cols), targets, sample_weights
 
             train_data = multiinput_train_generator()
             val_data = multiinput_val_generator()
@@ -343,14 +339,13 @@ def train(config, run_name: str = None, sweeping: bool = False):
 
     h = model.fit(
         train_data,
-        steps_per_epoch=0.8*len(x_train) // batch_size,
+        steps_per_epoch=int((0.8 * len(x_train)) // batch_size),
         validation_data=val_data,
-        validation_steps=(0.8*len(x_val)) // batch_size,
-        class_weight=class_weight,
+        validation_steps=int((0.8 * len(x_val)) // batch_size),
         epochs=epochs,
-        verbose=2, callbacks=[early_stopping, LR_plateau, WandBLogger,
-                              checkpointing]
-    )
+        verbose=2,
+        callbacks=[early_stopping, LR_plateau, WandBLogger, checkpointing]
+    )   
 
     # /-----------------------------
     #  LOG MISCLASSIFICATIONS
@@ -413,7 +408,7 @@ def train(config, run_name: str = None, sweeping: bool = False):
     if not os.path.exists(final_model_dir):
         os.makedirs(final_model_dir)
 
-    model.save(final_model_dir)
+    model.save(os.path.join(final_model_dir, "final_model.keras"))
     try:
         tf.keras.utils.plot_model(model, report_dir+"model_architecture.pdf",
                                   show_shapes=True, show_layer_names=False,
@@ -452,6 +447,6 @@ def train(config, run_name: str = None, sweeping: bool = False):
 if __name__ == "__main__":
     if sys.argv[1] == "sweep":
         sweep_id = "gtpkgpkv"
-        wandb.agent(sweep_id, function=sweep_train, count=15, project="BTSbot")
+        wandb.agent(sweep_id, function=sweep_train, count=15, project="BTSbotDeep")
     else:
         classic_train(sys.argv[1])

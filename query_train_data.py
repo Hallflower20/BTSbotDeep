@@ -10,9 +10,9 @@ from alert_utils import (make_triplet, extract_triplets, rerun_braai,
                          prep_alerts, crop_triplets)
 from compile_ZTFIDs import compile_ZTFIDs
 
-external_HDD = "/Volumes/NRExternal3/trainv8 data/"
-quest_raw_path = "v11raw/"
-to_desktop = "/Users/nabeelr/Desktop/"
+external_HDD = "/hildafs/projects/phy220048p/xhall/BTSbotDeepData/"
+quest_raw_path = "/hildafs/projects/phy220048p/xhall/BTSbotDeepData/"
+to_desktop = "/hildafs/projects/phy220048p/xhall/BTSbotDeepData/"
 
 if sys.platform == "darwin":
     with open('/Users/nabeelr/credentials.json', 'r') as f:
@@ -282,7 +282,7 @@ def download_training_data(query_df, query_name, label,
         BTS / not BTS label to assign to each alert in saved csv
         if int (must be 0 or 1) assign all alerts provided label
         if array_like (length must match number of alerts) assign from array in order
-        if "compute" assign all objects with any alert with magpsf < 18.5 label=1, otherwise 0
+        if "compute" assign all objects with any alert with magpsf < 21 label=1, otherwise 0
 
     normalize_cutouts (optional) - see query_kowalski()
 
@@ -339,7 +339,7 @@ def download_training_data(query_df, query_name, label,
     elif label == "compute":
         true_objs = set()
         for alert in alerts:
-            if alert['candidate']['magpsf'] < 18.5:
+            if alert['candidate']['magpsf'] < 21:
                 true_objs.add(alert['objectId'])
         label = np.asarray([1 if alert['objectId'] in true_objs else 0 for alert in alerts])
     else:

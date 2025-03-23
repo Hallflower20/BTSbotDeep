@@ -9,9 +9,9 @@ import sys
 import os
 
 btsse_query_urls = {
-    "trues": "http://sites.astro.caltech.edu/ztf/rcf/explorer.php?f=s&coverage=any&samprcf=y&sampdeep=y&subsample=trans&classstring=&classexclude=&refok=y&purity=y&ztflink=fritz&startsavedate=&startpeakdate=&startlastdate=&startra=&startdec=&startz=&startdur=&startrise=&startfade=&startpeakmag=&startlastmag=&startabsmag=&starthostabs=&starthostcol=&startsavevis=&startlatevis=&startcurrvis=&startb=&startav=&endsavedate=2025-01-01&endpeakdate=&endlastdate=&endra=&enddec=&endz=&enddur=&endrise=&endfade=&endpeakmag=18.5&endlastmag=&endabsmag=&endhostabs=&endhostcol=&endsavevis=&endlatevis=&endcurrvis=&endb=&endav=&sort=peakmag&format=csv",
-    "vars":  "http://sites.astro.caltech.edu/ztf/rcf/explorer.php?f=s&coverage=any&samprcf=y&sampdeep=y&subsample=var&classstring=&classexclude=&refok=y&ztflink=fritz&startsavedate=&startpeakdate=&startlastdate=&startra=&startdec=&startz=&startdur=&startrise=&startfade=&startpeakmag=&startlastmag=&startabsmag=&starthostabs=&starthostcol=&startsavevis=&startlatevis=&startcurrvis=&startb=&startav=&endsavedate=2025-01-01&endpeakdate=&endlastdate=&endra=&enddec=&endz=&enddur=&endrise=&endfade=&endpeakmag=&endlastmag=&endabsmag=&endhostabs=&endhostcol=&endsavevis=&endlatevis=&endcurrvis=&endb=&endav=&sort=peakmag&format=csv",
-    "dims":  "http://sites.astro.caltech.edu/ztf/rcf/explorer.php?f=s&coverage=any&samprcf=y&sampdeep=y&subsample=all&classstring=&classexclude=&covok=y&refok=y&purity=y&ztflink=fritz&startsavedate=&startpeakdate=&startlastdate=&startra=&startdec=&startz=&startdur=&startrise=&startfade=&startpeakmag=18.5&startlastmag=&startabsmag=&starthostabs=&starthostcol=&startsavevis=&startlatevis=&startcurrvis=&startb=&startav=&endsavedate=2025-01-01&endpeakdate=&endlastdate=&endra=&enddec=&endz=&enddur=&endrise=&endfade=&endpeakmag=&endlastmag=&endabsmag=&endhostabs=&endhostcol=&endsavevis=&endlatevis=&endcurrvis=&endb=&endav=&sort=peakmag&format=csv",
+    "trues": "http://sites.astro.caltech.edu/ztf/rcf/explorer.php?f=s&coverage=any&samprcf=y&sampdeep=y&sampdeepp=y&subsample=trans&classstring=&classexclude=&refok=y&purity=y&ztflink=fritz&startsavedate=&startpeakdate=&startlastdate=&startra=&startdec=&startz=&startdur=&startrise=&startfade=&startpeakmag=&startlastmag=&startabsmag=&starthostabs=&starthostcol=&startsavevis=&startlatevis=&startcurrvis=&startb=&startav=&endsavedate=2025-01-01&endpeakdate=&endlastdate=&endra=&enddec=&endz=&enddur=&endrise=&endfade=&endpeakmag=21&endlastmag=&endabsmag=&endhostabs=&endhostcol=&endsavevis=&endlatevis=&endcurrvis=&endb=&endav=&sort=peakmag&format=csv",
+    "vars":  "http://sites.astro.caltech.edu/ztf/rcf/explorer.php?f=s&coverage=any&samprcf=y&sampdeep=y&sampdeepp=y&subsample=var&classstring=&classexclude=&refok=y&ztflink=fritz&startsavedate=&startpeakdate=&startlastdate=&startra=&startdec=&startz=&startdur=&startrise=&startfade=&startpeakmag=&startlastmag=&startabsmag=&starthostabs=&starthostcol=&startsavevis=&startlatevis=&startcurrvis=&startb=&startav=&endsavedate=2025-01-01&endpeakdate=&endlastdate=&endra=&enddec=&endz=&enddur=&endrise=&endfade=&endpeakmag=&endlastmag=&endabsmag=&endhostabs=&endhostcol=&endsavevis=&endlatevis=&endcurrvis=&endb=&endav=&sort=peakmag&format=csv",
+    "dims":  "http://sites.astro.caltech.edu/ztf/rcf/explorer.php?f=s&coverage=any&samprcf=y&sampdeep=y&sampdeepp=y&subsample=all&classstring=&classexclude=&covok=y&refok=y&purity=y&ztflink=fritz&startsavedate=&startpeakdate=&startlastdate=&startra=&startdec=&startz=&startdur=&startrise=&startfade=&startpeakmag=21&startlastmag=&startabsmag=&starthostabs=&starthostcol=&startsavevis=&startlatevis=&startcurrvis=&startb=&startav=&endsavedate=2025-01-01&endpeakdate=&endlastdate=&endra=&enddec=&endz=&enddur=&endrise=&endfade=&endpeakmag=&endlastmag=&endabsmag=&endhostabs=&endhostcol=&endsavevis=&endlatevis=&endcurrvis=&endb=&endav=&sort=peakmag&format=csv",
 }
 
 if sys.platform == "darwin":
@@ -28,7 +28,7 @@ headers = {'Authorization': f'token {api_token}'}
 
 def query_rejects():
     """
-    Query BTS candidates from 2021-2023 that were not saved to RCF
+    Query BTS candidates from 2021-2025 that were not saved to RCF
     and are not in RCFjunk
 
     Parameters
@@ -43,9 +43,9 @@ def query_rejects():
     # BTS filter last changed 2020-10-29
     # Round start_date to 2021-01-01
     start_date = "2021-01-01"
-    end_date = "2023-01-01"
+    end_date = "2025-01-01"
 
-    RCF_groupid = "41"
+    RCF_groupid = "1621"
     RCFJunk_groupid = "255"
 
     endpoint = host+"/api/candidates"
@@ -112,7 +112,7 @@ def query_BTS_save_times():
     -------
     Nothing
     """
-    print("  Querying for trues save times")
+    print("Querying for trues save times")
     trues = pd.read_csv("data/base_data/trues.csv", index_col=None)
 
     if "RCF_save_time" not in list(trues):
@@ -126,15 +126,20 @@ def query_BTS_save_times():
 
         endpoint = f"/api/sources/{objid}"
         r = requests.get(host+endpoint, headers=headers, params={})
-        data = r.json()['data']
-
         if not r.ok:
+            print(r)
             continue
+        
+        data = r.json()['data']
 
         for group in data['groups']:
             if group['name'] == "Redshift Completeness Factor":
                 trues.loc[i, "RCF_save_time"] = astrotime.Time(group['saved_at']).jd
-        time.sleep(0.2)
+            elif group['name'] == "RCF Deep Survey":
+                trues.loc[i, "RCF_save_time"] = astrotime.Time(group['saved_at']).jd
+            elif group['name'] == "RCF Deep Partnership":
+                trues.loc[i, "RCF_save_time"] = astrotime.Time(group['saved_at']).jd
+        time.sleep(0.1)
 
     trues.to_csv("data/base_data/trues.csv", index=None)
     print("  Finished querying for BTS save times")
@@ -165,6 +170,7 @@ def query_BTSSE(query_name, overwrite: bool = False):
             f.write(requests.get(btsse_query_urls[query_name],
                                  auth=(creds["btsse_username"],
                                        creds["btsse_password"])).text)
+            #f.write(requests.get(btsse_query_urls[query_name]).text)
             print("Queried and wrote", query_name)
     else:
         print(f"  {query_name} list already present")

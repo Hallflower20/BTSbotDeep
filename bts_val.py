@@ -107,10 +107,10 @@ def run_val(output_dir):
     tf.keras.backend.clear_session()
 
     try:
-        model = tf.keras.models.load_model(output_dir + "best_model/")
+        model = tf.keras.models.load_model(output_dir + "best_model/best_model.keras")
     except:
         print("couldn't find best_model/ trying to find model/")
-        model = tf.keras.models.load_model(output_dir + "model/")
+        model = tf.keras.models.load_model(output_dir + "model/final_model.keras")
 
     if need_triplets and need_metadata:
         raw_preds = model.predict([triplets, cand.loc[:, metadata_cols]],
@@ -347,7 +347,7 @@ def run_val(output_dir):
         return len(valid) >= 2
 
     def bts_p2(alerts):
-        if np.min(alerts['magpsf']) <= 18.5:
+        if np.min(alerts['magpsf']) <= 21:
             valid = alerts[(alerts['preds'] == 1) & (alerts['magpsf'] < 19)]
             return len(valid) >= 2
         return False
@@ -369,7 +369,7 @@ def run_val(output_dir):
         already_seen = objid in policy_cand['objectId'].to_numpy()
         in_RCFJunk = objid in RCFJunk['id'].to_numpy()
         good_coverage = len(obj_alerts) >= 2  # improve, change to quality cut?
-        BTS_peak_thinned = (obj_alerts["label"].iloc[0] == 1) and np.min(obj_alerts["magpsf"]) > 18.5 
+        BTS_peak_thinned = (obj_alerts["label"].iloc[0] == 1) and np.min(obj_alerts["magpsf"]) > 21 
 
         if (not already_seen) and (not in_RCFJunk) and (good_coverage) and (not BTS_peak_thinned):
             policy_cand.loc[len(policy_cand)] = (
